@@ -1,57 +1,66 @@
-/* Create a CSS file (`styles.css`) to style your task manager: */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-display: flex;
-flex-direction: column;
-align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  padding: 2rem;
 }
-
-.task-form {
-margin-top: 20px;
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
-
-.task-form input[type="text"] {
-padding: 10px;
-font-size: 16px;
-border: 1px solid #ccc;
-border-radius: 5px;
-margin-right: 10px;
- }
-
-.task-form button {
-padding: 10px 20px;
-font-size: 16px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 5px;
-cursor: pointer;
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
-
-.task-form button:hover {
-background-color: #45a049;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
-
-.task-item {
-list-style-type: none;
-margin-top: 10px;
+form input {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
-
-.task-item span {
-margin-right: 10px;
+form button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
 }
-
-.task-item button {
-background-color: #f44336;
-color: white;
-border: none;
-cursor: pointer;
-border-radius: 50%;
-margin-left: 10px;
+form button:hover {
+  background-color: #0056b3;
 }
-
-.task-item button:hover {
-background-color: #cc0000;
+#task-list {
+  margin-top: 2rem;
+  list-style: none;
 }
+.task {
+  background: #f9f9f9;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  position: relative;
+}
+.task.completed {
+  background: #d4edda;
+  text-decoration: line-through;
+}
+.task .actions {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+.acti
