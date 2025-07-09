@@ -1,53 +1,67 @@
-// Initialize Firebase with your config
-firebase.initializeApp({
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-});
+const form = document.getElementById('task-form');
+const titleInput = document.getElementById('task-title');
+const descInput = document.getElementById('task-desc');
+const taskList = document.getElementById('task-list');
 
-const db = firebase.firestore();
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-// Function to add a task
-function addTask() {
-    const taskInput = document.getElementById("task-input");
-    const task = taskInput.value.trim();
-    if (task !== "") {
-        db.collection("tasks").add({
-            task: task,
-            timestamp: firebase.firestore. FieldValue.serverTimestamp(),
-        });
-        taskInput.value = "";
-    }
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// Function to render tasks
-
-function renderTasks(doc) {
-    const taskList = document.getElementById("task-list");
-    const taskItem = document.createElement("li");
-    taskItem.className = "task-item"
-    taskItem.innerHTML = `
-    <span>${doc.data().task}</span>
-    <button onclick="deleteTask('${doc.id}')">Delete</button>
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.className = `task ${task.completed ? 'completed' : ''}`;
+    li.innerHTML = `
+      <strong>${task.title}</strong>
+      <p>${task.desc || ''}</p>
+      <div class="actions">
+        <button class="done">${task.completed ? 'Undo' : 'Done'}</button>
+        <button class="edit">Edit</button>
+        <button class="delete">Delete</button>
+      </div>
     `;
-    taskList.appendChild(taskItem);
 
+    // Events
+    li.querySelector('.delete').onclick = () => {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    };
+
+    li.querySelector('.done').onclick = () => {
+      tasks[index].completed = !tasks[index].completed;
+      saveTasks();
+      renderTasks();
+    };
+
+    li.querySelector('.edit').onclick = () => {
+      const newTitle = prompt('Edit Title:', task.title);
+      const newDesc = prompt('Edit Description:', task.desc);
+      if (newTitle !== null) {
+        tasks[index].title = newTitle;
+        tasks[index].desc = newDesc;
+        saveTasks();
+        renderTasks();
+      }
+    };
+
+    taskList.appendChild(li);
+  });
 }
 
-// Real-time listener for tasks
-db.collection("tasks")
-.orderBy("timestamp", "desc")
-.onSnapshot(snapshot => {
-    const changes = snapshot.docChanges();
-    changes.forEach(change => {
-        if (change.type === "added") {
-            renderTasks(change.doc);
-        }
-    });
-});
+form.onsubmit = (e) => {
+  e.preventDefault();
+  const title = titleInput.value.trim();
+  const desc = descInput.value.trim();
+  if (!title) return;
 
-// Function to delete a task
+  tasks.unshift({ title, desc, completed: false });
+  saveTasks();
+  renderTasks();
+  form.reset();
+};
 
-function deleteTask(id) {
-    db.collection("tasks").doc(id).delete();
-}
+renderTasks();
